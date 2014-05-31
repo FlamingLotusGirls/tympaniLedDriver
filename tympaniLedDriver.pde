@@ -41,9 +41,27 @@ int flashingLEDNumber = -1;
 Color flashingLEDStoredValue;
 
 boolean flashing;
-
+boolean autoAdvancingColorList = true;
+boolean autoAdvancingSequenceList = true;
+char[] commandBuffer[10]
 void loop() {
-  button_state = listen_from_firectl();
+
+  byte commandByteCount = listen_from_firectl(commandBuffer);
+  if (commandByteCount > 0){
+    switch(commandBuffer[0]){
+      case 1: //switch color list
+      break;
+      case 2: //switch sequence list
+      break;
+      case 3: //flash
+        flashDelay = millis();
+      break;
+      case 4: //go back to auto advancing color list
+      break;
+      case 5: //go back to auto advancing sequence list
+      break;
+    }
+  }
     
   //Here we increment the debugging output loop
   loopCount++;
@@ -65,22 +83,12 @@ void loop() {
   };
   
   //This decides when to move to the next color scheme.  The colors are temporarily averaged between the two schemes.  See memory_color.cpp for details
-  if(millis() - colorListTime > 30000){
+  if(autoAdvancingColorList && millis() - colorListTime > 30000){
     colorListTime = millis();
     masterColorList.incrementList();
 //    Serial.println("**Next Color List**");
   };
   
-  if(button_state == BUTTONTWO || button_state == BUTTONTHREE || button_state == BUTTONONE){
-    flashing = true;
-    button_state = 0;
-    flashDelay = millis();
-    flashingLEDNumber = random(NumLEDs);
-    if(0 < flashingLEDNumber < NumLEDs){
-      flashingLEDStoredValue = brollies[flashingLEDNumber].getColor();
-      brollies[flashingLEDNumber].setColor(Color(1023,1023,1023));
-    };
-  };
   
   if(millis() - flashDelay < 2000){
     if(0 < flashingLEDNumber < NumLEDs){

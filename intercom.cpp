@@ -6,6 +6,7 @@
 
 #include "wProgram.h"
 #include "intercom.h"
+#include <ctype.h>
 
 // import processing.serial.*;
 
@@ -16,7 +17,57 @@ void setup_serial(void) {
   Serial.begin(BAUDRATE);
 }
 
-int listen_from_firectl(void) {
+char *listen_from_firectl(char[] result) {
+  uint8_t count = 0;
+  uint8_t listeningState = 0;
+  char incomingByte;
+  char addressBytes[2];
+  uint8_t resultLength = 0;
+  while (Serial.available() > 0) {
+    incomingByte = Serial.read();
+    if (incomingByte == '.'){
+      count = 0;
+      listeningState = 0;
+    }
+    else if (listeningState == 0){
+      addressBytes[count++] = incomingByte;
+      if (count == 2){
+        if (toHex(addressBytes[0], addressBytes[1]) == BOARDADDRESS){
+          listeningState = 1; //for us, start saving command data
+          count = 0;
+        }
+        else{
+          listeningState = 2; //not for us, ignore
+        }
+      }
+    }    
+    else if (listeningState == 1){
+      result[count++] = incomingByte;
+      resultLength++;
+    }
+  }
+  return resultLength;
+}
+uint8_t toHex(char hi, char lo) {
+  uint8_t b;
+  hi = toupper(hi);
+  if( isxdigit(hi) ) {
+    if( hi > '9' ) hi -= 7;      // software offset for A-F
+    hi -= 0x30;                  // subtract ASCII offset
+    b = hi<<4;
+    lo = toupper(lo);
+    if( isxdigit(lo) ) {
+      if( lo > '9' ) lo -= 7;  // software offset for A-F
+      lo -= 0x30;              // subtract ASCII offset
+      b = b + lo;
+      return b;
+    } // else error
+  }  // else error
+  return 0;
+}
+
+
+/*int listen_from_firectl(void) {
 //   returns 0 for nothing of interest yet
 //   returns nonzero for something useful
 
@@ -43,7 +94,7 @@ int listen_from_firectl(void) {
   // we got nuthin
   return 0;
 
-}
+}*/
 
 
 void send_to_firectl(char thing_to_send) {
