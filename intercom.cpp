@@ -42,8 +42,13 @@ char *listen_from_firectl(char[] result) {
       }
     }    
     else if (listeningState == 1){
-      result[count++] = incomingByte;
-      resultLength++;
+      if (incomingByte == '!'){
+        listeningState = 2;
+      }
+      else {
+        result[count++] = incomingByte;
+        resultLength++;
+      }
     }
   }
   return resultLength;

@@ -40,7 +40,6 @@ int flashingLEDNumber = -1;
 
 Color flashingLEDStoredValue;
 
-boolean flashing;
 boolean autoAdvancingColorList = true;
 boolean autoAdvancingSequenceList = true;
 char[] commandBuffer[10]
@@ -50,15 +49,21 @@ void loop() {
   if (commandByteCount > 0){
     switch(commandBuffer[0]){
       case 1: //switch color list
+        masterColorList.pickList(commandBuffer[1])
+        autoAdvancingColorList = false;
       break;
       case 2: //switch sequence list
-      break;
+        masterSequenceList.pickList(commandBuffer[1])
+        autoAdvancingSequenceList = false;
+     break;
       case 3: //flash
         flashDelay = millis();
       break;
       case 4: //go back to auto advancing color list
+        autoAdvancingColorList = true;
       break;
       case 5: //go back to auto advancing sequence list
+        autoAdvancingSequenceList = true;
       break;
     }
   }
@@ -111,7 +116,7 @@ void loop() {
   WriteLEDArray();
   
   //The number on the right of the comparison here is the time to cycle to the next propagation scheme. (x)
-/*  if(millis() - sequenceListTime > 300000){
+  if(millis() - sequenceListTime > 300000){
     //this resets the sequence base time so we wait another x seconds where x is set above.
     sequenceListTime = millis();
     //The line below moves to the next propagation scheme.  
@@ -122,7 +127,6 @@ void loop() {
 //    Serial.println("**Next Propigation List**");
     button_state = 0;
   };
-*/
 
 }
 
