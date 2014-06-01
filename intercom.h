@@ -4,6 +4,7 @@
    common file for interprocessor communication between the LED controller and
    the fire controller
 */
+#include <ctype.h>
 
 #ifndef intercom_h
 #define intercom_h
@@ -14,8 +15,7 @@
 #define BUTTONTHREE (3+64)
 
 void setup_serial();
-void send_to_ledctl(int thing_to_send);
-int listen_from_firectl(void);
-
+uint8_t listen_from_firectl(char result[]);
+uint8_t toHex(char hi, char lo);
 #endif
 

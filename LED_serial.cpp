@@ -1,4 +1,4 @@
-#include "WProgram.h"
+#include <Arduino.h>
 #include "LED_serial.h"
 #include "memory_color.h"
 

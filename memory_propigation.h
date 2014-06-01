@@ -1,5 +1,3 @@
-//All arduino libs require this
-#include "WProgram.h"
 
 //make sure it isn't included more than once.
 #ifndef memory_propigation_h
@@ -28,6 +26,9 @@ class MasterSequenceList{
     
     //This moves to the next sequence
     int incrementList();
+    
+    int pickList(int listIndex);
+
     
     //Here we get values from the current list at address
     int getFrom(int address);

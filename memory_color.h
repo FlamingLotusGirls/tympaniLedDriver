@@ -1,4 +1,4 @@
-#include "WProgram.h"
+//#include "WProgram.h"
 #ifndef memory_color_h
 #define memory_color_h
 #include <avr/pgmspace.h>
@@ -59,6 +59,8 @@ class MasterColorList{
     MasterColorList(int numberOfLists,ColorList* listListPointer);
     //Move to the next list of colors
     int incrementList();
+    
+    int pickList(int listIndex);
     //Get the color at address in the current list
     Color getCurrentColor(int address);
     //Get the previous color in the list

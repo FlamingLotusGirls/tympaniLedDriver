@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "memory_propigation.h"
 #include "memory_color.h"
 
@@ -267,7 +268,7 @@ PropigationList slow(slow_list,sizeof(slow_list) / (sizeof(prog_int16_t) * 3));
 
 
 //Here is the master sequence list
-PropigationList listOfLists[] = {slow};
+PropigationList listOfLists[] = {slow, bloom, sync, reverse_order, in_order};
 
 //Here is the object wrapper for the master sequence list
 MasterSequenceList masterSequenceList(sizeof(listOfLists) / sizeof(PropigationList),listOfLists);
@@ -326,6 +327,14 @@ int MasterSequenceList::incrementList(){
   if (_currentList > _numberOfListLists -1){
     _currentList = 0;
   }
+  transitionBegan = millis();
+  return _currentList;
+};
+
+
+int MasterSequenceList::pickList(int listIndex){
+  _lastList = _currentList;
+  _currentList = listIndex % _numberOfListLists;
   transitionBegan = millis();
   return _currentList;
 };

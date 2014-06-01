@@ -1,5 +1,5 @@
 //all arduino libs require this
-#include "WProgram.h"
+#include <Arduino.h>
 #include "memory_color.h"
 
 //empty color constructor for arrays and such.  
@@ -302,9 +302,9 @@ PROGMEM prog_int16_t white_blink_list[] = {
 ColorList white_blink_color(white_blink_list,sizeof(white_blink_list) / (sizeof(prog_int16_t) * 4));
 
 
-//ColorList listOfColorLists[] = {devilish_color,minty_color,fire_color,ocean_color,cruise_color,slow_red_color};
+ColorList listOfColorLists[] = {devilish_color,minty_color,fire_color,ocean_color,cruise_color,slow_red_color, flamey_purple_color, rave_bow_color, glitter_color, white_blink_color};
 //ColorList listOfColorLists[] = {devilish_color,flamey_purple_color,fire_color,slow_red_color};
-ColorList listOfColorLists[] = {fire_color,devilish_color,flamey_purple_color,flash_color};
+//ColorList listOfColorLists[] = {fire_color,devilish_color,flamey_purple_color,flash_color};
 
 //This is the object for the list of color lists.  
 MasterColorList::MasterColorList(int numberOfColorLists,ColorList* listOfColorListsPointer){
@@ -338,6 +338,12 @@ int MasterColorList::incrementList(){
   if (_currentList >= _numberOfColorLists){
     _currentList = 0;
   }
+  transitionBegan = millis();
+  return _currentList;  
+};
+int MasterColorList::pickList(int listIndex){
+  _lastList = _currentList;
+  _currentList = listIndex % _numberOfColorLists;
   transitionBegan = millis();
   return _currentList;  
 };

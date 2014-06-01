@@ -4,20 +4,20 @@
    
 */ 
 
-#include "wProgram.h"
+#include <Arduino.h>
 #include "intercom.h"
 #include <ctype.h>
 
 // import processing.serial.*;
 
 #define BAUDRATE 9600
-
+#define BOARDADDRESS 20
 
 void setup_serial(void) {
   Serial.begin(BAUDRATE);
 }
 
-char *listen_from_firectl(char[] result) {
+uint8_t listen_from_firectl(char result[10]) {
   uint8_t count = 0;
   uint8_t listeningState = 0;
   char incomingByte;
@@ -25,7 +25,7 @@ char *listen_from_firectl(char[] result) {
   uint8_t resultLength = 0;
   while (Serial.available() > 0) {
     incomingByte = Serial.read();
-    if (incomingByte == '.'){
+    if (incomingByte == '!'){
       count = 0;
       listeningState = 0;
     }
@@ -42,7 +42,7 @@ char *listen_from_firectl(char[] result) {
       }
     }    
     else if (listeningState == 1){
-      if (incomingByte == '!'){
+      if (incomingByte == '.'){
         listeningState = 2;
       }
       else {
@@ -101,18 +101,4 @@ uint8_t toHex(char hi, char lo) {
 
 }*/
 
-
-void send_to_firectl(char thing_to_send) {
-   Serial.print(thing_to_send, BYTE);
-}
-
-
-int listen_from_ledctl(void) {
-
-}
-
-
-void send_to_ledctl(int thing_to_send) {
-   Serial.print(thing_to_send, BYTE);     
-}
 
