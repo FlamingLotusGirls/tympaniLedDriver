@@ -42,7 +42,7 @@ Color flashingLEDStoredValue;
 
 boolean autoAdvancingColorList = true;
 boolean autoAdvancingSequenceList = true;
-char commandBuffer[10];
+char commandBuffer[5];
 void loop() {
 
   uint8_t commandByteCount = listen_from_firectl(commandBuffer);

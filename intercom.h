@@ -16,6 +16,6 @@
 
 void setup_serial();
 uint8_t listen_from_firectl(char result[]);
-uint8_t toHex(char hi, char lo);
+uint8_t hexToByte(char hi, char lo);
 #endif
 

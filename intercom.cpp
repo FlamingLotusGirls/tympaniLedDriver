@@ -17,24 +17,26 @@ void setup_serial(void) {
   Serial.begin(BAUDRATE);
 }
 
-uint8_t listen_from_firectl(char result[10]) {
-  uint8_t count = 0;
+uint8_t listen_from_firectl(char result[5]) {
+  uint8_t addrCount = 0;
+  uint8_t bufferCount = 0;
   uint8_t listeningState = 0;
   char incomingByte;
   char addressBytes[2];
+  char buffer[10];
   uint8_t resultLength = 0;
+  
   while (Serial.available() > 0) {
     incomingByte = Serial.read();
     if (incomingByte == '!'){
-      count = 0;
+      addrCount = 0;
       listeningState = 0;
     }
     else if (listeningState == 0){
-      addressBytes[count++] = incomingByte;
-      if (count == 2){
-        if (toHex(addressBytes[0], addressBytes[1]) == BOARDADDRESS){
+      addressBytes[addrCount++] = incomingByte;
+      if (addrCount == 2){
+        if (hexToByte(addressBytes[0], addressBytes[1]) == BOARDADDRESS){
           listeningState = 1; //for us, start saving command data
-          count = 0;
         }
         else{
           listeningState = 2; //not for us, ignore
@@ -46,14 +48,17 @@ uint8_t listen_from_firectl(char result[10]) {
         listeningState = 2;
       }
       else {
-        result[count++] = incomingByte;
-        resultLength++;
+        buffer[bufferCount++] = incomingByte;
       }
     }
   }
+  uint8_t i = 0;
+  while (i < bufferCount - 1){
+    result[resultLength++] = hexToByte(buffer[i++], buffer[i++]);
+  }
   return resultLength;
 }
-uint8_t toHex(char hi, char lo) {
+uint8_t hexToByte(char hi, char lo) {
   uint8_t b;
   hi = toupper(hi);
   if( isxdigit(hi) ) {
